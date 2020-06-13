@@ -1,0 +1,16 @@
+tracks/node_modules
+track-server/node_modules
+.expo/*
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+web-report/
+track-server/.env
+
+# macOS
+.DS_Store
