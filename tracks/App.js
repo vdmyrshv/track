@@ -1,19 +1,41 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react'
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>hello</Text>
-    </View>
-  );
-}
+import { createAppContainer, createSwitchNavigator } from 'react-navigation'
+import { createStackNavigator } from 'react-navigation-stack'
+import { createBottomTabNavigator } from 'react-navigation-tabs'
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+import { setNavigator } from './src/navigationRef'
+
+import {
+	Provider as AuthProvider
+} from './src/context/AuthContext'
+
+import SignupScreen from './src/screens/SignupScreen'
+import SigninScreen from './src/screens/SigninScreen'
+import TrackCreateScreen from './src/screens/TrackCreateScreen'
+import AccountScreen from './src/screens/AccountScreen'
+import TrackListScreen from './src/screens/TrackListScreen'
+import TrackDetailScreen from './src/screens/TrackDetailScreen'
+
+const switchNavigator = createSwitchNavigator({
+	loginFlow: createStackNavigator({
+		Signup: SignupScreen,
+		Signin: SigninScreen
+	}),
+	mainFlow: createBottomTabNavigator({
+		trackListFlow: createStackNavigator({
+			TrackList: TrackListScreen,
+			TrackDetail: TrackDetailScreen
+		}),
+		TrackCreate: TrackCreateScreen,
+		Account: AccountScreen
+	})
+})
+
+const App = createAppContainer(switchNavigator)
+
+export default () => (
+	<AuthProvider>
+		<App ref={(nav)=> {setNavigator(nav)}}/>
+	</AuthProvider>
+)
