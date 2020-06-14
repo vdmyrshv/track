@@ -10,10 +10,26 @@ const authReducer = (state, action) => {
 	switch (action.type) {
 		case 'sign_up':
 			return { errorMessage: '', token: action.payload }
+		case 'sign_in':
+			return { errorMessage: '', token: action.payload }
 		case 'add_error':
 			return { ...state, errorMessage: action.payload }
+		case 'sign_out':
+			return { errorMessage: '', token: null }
+		case 'clear_error_message':
+			return {...state, errorMessage: ''}
 		default:
 			return state
+	}
+}
+
+const tryLocalSignin = dispatch => async () => {
+	const token = await AsyncStorage.getItem('token')
+	if (token) {
+		dispatch({ type: 'sign_in', payload: token})
+		navigate('TrackList')
+	} else {
+		navigate('loginFlow')
 	}
 }
 const signUp = dispatch => async ({ email, password }) => {
@@ -26,14 +42,14 @@ const signUp = dispatch => async ({ email, password }) => {
 			password
 		})
 		await AsyncStorage.setItem('token', response.data.token)
-		dispatch({ type: 'sign_up', action: response.data.token })
+		dispatch({ type: 'sign_up', payload: response.data.token })
 		navigate('TrackList')
 	} catch (err) {
 		dispatch({
 			type: 'add_error',
 			payload: err.message
 		})
-		//setTimeout(() => dispatch({ type: 'add_error', payload: '' }), 3000)
+		setTimeout(() => dispatch({ type: 'add_error', payload: '' }), 3000)
 		console.log(err.message)
 	}
 }
@@ -44,23 +60,30 @@ const signIn = dispatch => async ({ email, password }) => {
 			password
 		})
 		await AsyncStorage.setItem('token', response.data.token)
-		dispatch({ type: 'sign_in', action: response.data.token })
+		dispatch({ type: 'sign_in', payload: response.data.token })
 		navigate('TrackList')
 	} catch (err) {
 		dispatch({
 			type: 'add_error',
-			payload: "Oops, something went wrong!"
+			payload: 'Oops, something went wrong!'
 		})
 		setTimeout(() => dispatch({ type: 'add_error', payload: '' }), 3000)
 		console.log(err.message)
 	}
 }
-const signOut = dispatch => () => {
+const signOut = dispatch => async () => {
+	await AsyncStorage.removeItem('token')
 	dispatch({ type: 'sign_out' })
+	navigate('Signin')
+}
+
+const clearErrorMessage = dispatch => () => {
+	dispatch({ type: 'clear_error_message'})
+	console.log('error message cleared')
 }
 
 export const { Context, Provider } = createDataContext(
 	authReducer,
-	{ signUp, signIn, signOut },
+	{ signUp, signIn, signOut, clearErrorMessage, tryLocalSignin },
 	{ token: null, errorMessage: '' }
 )
