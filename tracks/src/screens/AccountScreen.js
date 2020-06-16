@@ -1,22 +1,21 @@
 import React, { useContext } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Button } from 'react-native-elements'
+import { SafeAreaView } from 'react-navigation'
 
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen'
 
 import { Context as AuthContext } from '../context/AuthContext'
 
 const AccountScreen = () => {
-    const { signOut } = useContext(AuthContext)
-    
-    
+	const { signOut } = useContext(AuthContext)
 	return (
-		<View style={styles.containerStyle}>
+		<SafeAreaView forceInset={{top: 'always'}} style={styles.containerStyle}>
 			<Text style={styles.testStyle}>AccountScreen</Text>
             <View style={styles.buttonSizeStyle}>
 			    <Button style={styles.buttonStyle} type="outline" raised title="Sign Out" onPress={signOut} />
             </View>
-		</View>
+		</SafeAreaView>
 	)
 }
 
@@ -26,7 +25,11 @@ const styles = StyleSheet.create({
     containerStyle: {
         flex: 1,
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        borderColor: "darkcyan",
+        borderWidth: 2,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10
     },
     testStyle: {
         marginBottom: 20,
