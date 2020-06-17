@@ -7,6 +7,8 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 
 import { Context as AuthContext } from '../context/AuthContext'
 
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 const AccountScreen = () => {
 	const { signOut } = useContext(AuthContext)
 	return (
@@ -20,6 +22,14 @@ const AccountScreen = () => {
 }
 
 export default AccountScreen
+
+const tabBarIcon = () => ( <MaterialCommunityIcons name="account" size={24} color="black" /> )
+
+AccountScreen.navigationOptions={
+	title: 'Account', 
+	tabBarIcon
+}
+
 
 const styles = StyleSheet.create({
     containerStyle: {

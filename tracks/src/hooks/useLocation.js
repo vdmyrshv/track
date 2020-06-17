@@ -19,19 +19,11 @@ export default (isFocused) => {
     const [err, setErr] = useState(null)
     const [subscriber, setSubscriber] = useState(null)
     
-    useEffect(() => {
-        if(isFocused){
-            startWatching()
-        } else {
-            stopWatching()
-        }
-	}, [isFocused])
-
 	const startWatching = async () => {
 		const permissionResponse = await requestPermissionsAsync()
         setErr(permissionResponse.granted)
-        startRecording()
 		if (permissionResponse.granted) {
+			startRecording()
 			const subscriber = await watchPositionAsync(
 				{
 					accuracy: Accuracy.BestForNavigation,
@@ -39,7 +31,7 @@ export default (isFocused) => {
 					distanceInterval: 10
 				},
 				location => {
-					addLocation(location)
+					addLocation(location, isFocused)
 				}
             )
             setSubscriber(subscriber)
@@ -50,10 +42,29 @@ export default (isFocused) => {
 	}
 
 	const stopWatching = () => {
-		subscriber.remove()
+		if(subscriber){
+			subscriber.remove()
+		}
         stopRecording()
         setSubscriber(null)
 	}
+
+	useEffect(() => {
+        if(isFocused){
+            startWatching()
+        } else {
+            stopWatching()
+		}
+
+		console.log("test")
+		
+		return ()=> {
+			if (subscriber) {
+				subscriber.remove()
+			}
+		}
+	}, [isFocused])
+
 
 	return { err, recording, startWatching, stopWatching }
 }

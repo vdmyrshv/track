@@ -3,7 +3,7 @@ import * as Location from 'expo-location'
 const tenMetersWithDegrees = 0.0001
 
 const getLocation = increment => ({
-	timeStamp: 100000000,
+	timeStamp: 10000,
 	coords: {
 		speed: 0,
 		heading: 0,

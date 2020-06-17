@@ -5,14 +5,12 @@ const locationReducer = (state, action) => {
 		case 'add_current_location':
 			return {
 				...state,
-				locations: [
-					...state.locations,
-					{
-						latitude: action.payload.coords.latitude,
-						longitude: action.payload.coords.longitude
-					}
-				],
 				currentLocation: action.payload
+			}
+		case 'add_location':
+			return {
+				...state,
+				locations: [...state.locations, { ...action.payload }]
 			}
 		case 'start_recording':
 			return {
@@ -24,30 +22,48 @@ const locationReducer = (state, action) => {
 				...state,
 				recording: false
 			}
+		case 'change_name':
+			return { ...state, name: action.payload }
+		case 'clear_locations':
+			return {...state, locations: [], name: ''}
 		default:
 			return state
 	}
 }
 
-const actions = {
+const locationActions = {
+	changeName: dispatch => name => {
+		dispatch({ type: 'change_name', payload: name })
+	},
+	clearName: dispatch => () => {
+		dispatch({ type: 'change_name', payload: '' })
+	},
 	startRecording: dispatch => () => {
-		dispatch({ type: 'start_recording', payload: true })
+		dispatch({ type: 'start_recording' })
 	},
 	stopRecording: dispatch => () => {
-		dispatch({ type: 'stop_recording', payload: false })
+		dispatch({ type: 'stop_recording' })
 	},
-	addLocation: dispatch => location => {
-        console.log("hi there!")
+	addLocation: dispatch => (location, recording) => {
 		dispatch({ type: 'add_current_location', payload: location })
+		console.log('tracking')
+		if (recording) {
+			dispatch({ type: 'add_location', payload: location })
+			console.log('recording')
+		}
+	},
+	clearLocations: dispatch => () => {
+		dispatch({type: 'clear_locations'})
 	}
 }
 
 export const { Context, Provider } = createDataContext(
 	locationReducer,
-	{ ...actions },
+	{ ...locationActions },
 	{
 		recording: false,
 		locations: [],
-		currentLocation: null
+		currentLocation: null,
+		name: ''
 	}
 )

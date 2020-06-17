@@ -7,28 +7,27 @@ import { Text, Button } from 'react-native-elements'
 
 import { SafeAreaView, withNavigationFocus } from 'react-navigation'
 
-import useLocation from '../hooks/useLocation'
+import TrackForm from '../components/TrackForm'
+
+import { FontAwesome5 } from '@expo/vector-icons';
 
 const TrackCreateScreen = ({ isFocused }) => {
-	const { err, recording, startWatching, stopWatching } = useLocation(
-		isFocused
-	)
-	console.log(recording)
+	
 
 	return (
 		<SafeAreaView forceInset={{ top: 'always' }}>
 			<Text h2>create a track</Text>
 			<Map />
-			<Button
-                buttonStyle={{backgroundColor: recording ? "red" : "green"}}
-				title={`${recording ? 'Stop' : 'Start'} Recording`}
-				onPress={() => {
-					recording ? stopWatching() : startWatching()
-				}}
-			/>
-			{!err && <Text>Please enable location services</Text>}
+			<TrackForm isFocused={isFocused}/>
 		</SafeAreaView>
 	)
+}
+
+const tabBarIcon = () => ( <FontAwesome5 name="map-marked" size={24} color="black" />)
+
+TrackCreateScreen.navigationOptions={
+	title: 'Add Track', 
+	tabBarIcon
 }
 
 export default withNavigationFocus(TrackCreateScreen)

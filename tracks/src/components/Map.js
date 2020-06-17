@@ -16,7 +16,7 @@ const Map = () => {
 		state: { currentLocation, locations }
 	} = useContext(LocationContext)
 
-    const [points, setPoints] = useState([])
+	//const [points, setPoints] = useState([])
 
 	// //mock point function for testing a line
 	// const genPoints = () => {
@@ -50,13 +50,20 @@ const Map = () => {
 						longitudeDelta: 0.01
 					}}
 				>
-                    {/* to have the screen track location use the region prop and copy in the initialRegion object in hte MapView opening tag */}
-					<Polyline coordinates={locations} strokeWidth={2} strokeColor="orange" />
+					{/* to have the screen track location use the region prop and copy in the initialRegion object in hte MapView opening tag */}
+					<Polyline
+						coordinates={locations.map(location => ({
+							latitude: location.coords.latitude,
+							longitude: location.coords.longitude
+						}))}
+						strokeWidth={2}
+						strokeColor='orange'
+					/>
 					<Circle
 						center={currentLocation.coords}
 						radius={40}
 						strokeColor='rgba(186, 237, 47, .7)'
-                        strokeWidth={3}
+						strokeWidth={3}
 						fillColor='rgba(237, 196, 47, .7)'
 					/>
 				</MapView>
